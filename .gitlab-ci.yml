@@ -1,0 +1,14 @@
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - mkdir -p public
+    - cp index.html public/
+    - cp start-demo.sh public/
+    - cp start-demo.bat public/
+    - cp llm-launch-prompt.txt public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
