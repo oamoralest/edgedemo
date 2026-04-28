@@ -1,0 +1,5 @@
+.DS_Store
+Thumbs.db
+
+# Python local server cache
+__pycache__/

@@ -1,0 +1,16 @@
+Use the provided project files to launch the Edge AI Sentinel HTML5 demo.
+
+Requirements:
+1) Use the exact contents of `index.html` in this folder as the demo page.
+2) Serve the current folder with a static HTTP server.
+3) Open the demo in the user's default browser.
+4) If port 8000 is occupied, try 8001, then 8002.
+5) Report the final URL used.
+
+Preferred commands:
+- macOS/Linux: `python3 -m http.server 8000`
+- Windows: `py -3 -m http.server 8000` (fallback `python -m http.server 8000`)
+
+Success criteria:
+- Browser loads the page title: "Edge AI Sentinel Monitor"
+- The page is interactive (target buttons and simulation controls work)
