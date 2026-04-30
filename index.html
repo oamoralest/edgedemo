@@ -1801,6 +1801,7 @@
       current: baseline,
       temperature: 50,
       audioAbnormal: false,
+      modalityStatus: null,
       alert: false,
       acknowledged: false,
       eventDeltaPct: 0,
@@ -1956,8 +1957,10 @@
 
     function updateAlertCopy() {
       const target = activeTarget();
+      const thermalState = state.temperature >= 60 ? `${state.temperature.toFixed(1)}°C overheating` : `${state.temperature.toFixed(1)}°C stable thermal`;
+      const acousticState = state.audioAbnormal ? "abnormal acoustic hissing" : "acoustic band stable";
       els.alertTitle.textContent = target.alertTitle;
-      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> pressure shift, <strong>${state.temperature.toFixed(1)}°C</strong> overheating, and abnormal acoustic hissing. Evidence was captured locally and sent for operator review.`;
+      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> pressure shift, <strong>${thermalState}</strong>, and <strong>${acousticState}</strong>. Evidence was captured locally and sent for operator review.`;
     }
 
     function updateAssetDetails() {
@@ -1975,29 +1978,57 @@
       chip.querySelector("b").textContent = label;
     }
 
-    function updateFusionSummary() {
-      const target = activeTarget();
-      if (!state.alert) {
-        setModality("vision", "Nominal · 97%", "good");
-        setModality("vibration", "Nominal · 98%", "good");
-        setModality("thermal", "Nominal · 96%", "good");
-        setModality("acoustic", "Nominal · 96%", "good");
-        setModality("depth", "Nominal · 97%", "good");
-        els.fusionVerdict.textContent = "Fusion decision: monitoring nominal baseline across all modalities.";
-        return;
-      }
+    function confidence(min, max) {
+      return Math.floor(randomBetween(min, max + 1));
+    }
 
-      setModality("vision", "Corroborated · 98%", target.method.includes("Vision") ? "alert" : "warn");
-      setModality("vibration", "Trigger source · 99%", "alert");
-      setModality("thermal", "Rising trend · 95%", "warn");
-      setModality("acoustic", "Stable band · 96%", "good");
-      setModality("depth", "Reference lock · 97%", target.method.includes("Depth") ? "alert" : "good");
-      els.fusionVerdict.textContent = `Fusion decision: ${target.label} breach confirmed at ${Math.abs(state.eventDeltaPct).toFixed(2)}% deviation.`;
+    function setNominalModalities() {
+      state.modalityStatus = {
+        vision: { label: `Nominal · ${confidence(96, 98)}%`, level: "good" },
+        vibration: { label: `Nominal · ${confidence(97, 99)}%`, level: "good" },
+        thermal: { label: `Nominal · ${confidence(95, 97)}%`, level: "good" },
+        acoustic: { label: `Stable band · ${confidence(95, 97)}%`, level: "good" },
+        depth: { label: `Reference lock · ${confidence(96, 98)}%`, level: "good" },
+        verdict: "Fusion decision: monitoring nominal baseline across all modalities."
+      };
+    }
+
+    function setAlertModalities() {
+      const visionLevel = Math.random() < 0.55 ? "warn" : "good";
+      const thermalLevel = state.temperature >= 60 ? (Math.random() < 0.7 ? "alert" : "warn") : "good";
+      const acousticLevel = state.audioAbnormal ? (Math.random() < 0.7 ? "alert" : "warn") : "good";
+      const depthLevel = Math.random() < 0.18 ? "warn" : "good";
+      state.modalityStatus = {
+        vision: { label: `Corroborated · ${confidence(96, 99)}%`, level: visionLevel },
+        vibration: { label: `Trigger source · ${confidence(98, 99)}%`, level: "alert" },
+        thermal: {
+          label: state.temperature >= 60 ? `Overheating · ${confidence(95, 98)}%` : `Stable thermal · ${confidence(95, 97)}%`,
+          level: thermalLevel
+        },
+        acoustic: {
+          label: state.audioAbnormal ? `Abnormal hiss · ${confidence(95, 98)}%` : `Stable band · ${confidence(95, 97)}%`,
+          level: acousticLevel
+        },
+        depth: { label: `Reference lock · ${confidence(96, 98)}%`, level: depthLevel },
+        verdict: `Fusion decision: ${activeTarget().label} breach confirmed at ${Math.abs(state.eventDeltaPct).toFixed(2)}% deviation.`
+      };
+    }
+
+    function updateFusionSummary() {
+      if (!state.modalityStatus) setNominalModalities();
+      const status = state.modalityStatus;
+      setModality("vision", status.vision.label, status.vision.level);
+      setModality("vibration", status.vibration.label, status.vibration.level);
+      setModality("thermal", status.thermal.label, status.thermal.level);
+      setModality("acoustic", status.acoustic.label, status.acoustic.level);
+      setModality("depth", status.depth.label, status.depth.level);
+      els.fusionVerdict.textContent = status.verdict;
     }
 
     function updateDeliveryPanel() {
       const target = activeTarget();
       if (!state.alert && !state.acknowledged) {
+        if (!state.modalityStatus) setNominalModalities();
         els.alertPayload.textContent = "No active payload. Alert package is idle.";
         els.routeSms.classList.remove("active");
         els.routeMes.classList.remove("active");
@@ -2062,6 +2093,7 @@
       state.current = baseline + randomBetween(-jitter, jitter);
       state.temperature = 50 + randomBetween(-0.6, 0.6);
       state.audioAbnormal = false;
+      setNominalModalities();
       els.confidence.textContent = `${randomBetween(96.4, 98.9).toFixed(1)}%`;
       render();
     }
@@ -2117,7 +2149,8 @@
       state.eventTicket = `EVT-${Math.floor(randomBetween(1000, 9999))}`;
       state.current = baseline * (1 + state.eventDeltaPct / 100);
       state.temperature = 61;
-      state.audioAbnormal = true;
+      state.audioAbnormal = Math.random() < 0.75;
+      setAlertModalities();
       els.statusText.textContent = "Alert raised by edge device";
       els.sensorMode.textContent = "Trigger Lock";
       els.workerState.textContent = "Awake";
@@ -2155,6 +2188,7 @@
         state.current = baseline + randomBetween(-0.18, 0.18);
         state.temperature = 50 + randomBetween(-0.4, 0.4);
         state.audioAbnormal = false;
+        setNominalModalities();
         els.statusText.textContent = "Verified return to nominal band";
         els.sensorMode.textContent = "Depth Sensor Active";
         els.workerState.textContent = "Sleeping";
@@ -2183,6 +2217,7 @@
       state.temperature = 50;
       state.audioAbnormal = false;
       state.startedAt = Date.now();
+      setNominalModalities();
       els.statusText.textContent = "Nominal edge observation";
       els.sensorMode.textContent = "Depth Sensor Active";
       els.workerState.textContent = "Sleeping";
