@@ -1994,22 +1994,18 @@
     }
 
     function setAlertModalities() {
-      const visionLevel = Math.random() < 0.55 ? "warn" : "good";
-      const thermalLevel = state.temperature >= 60 ? (Math.random() < 0.7 ? "alert" : "warn") : "good";
-      const acousticLevel = state.audioAbnormal ? (Math.random() < 0.7 ? "alert" : "warn") : "good";
-      const depthLevel = Math.random() < 0.18 ? "warn" : "good";
       state.modalityStatus = {
-        vision: { label: `Corroborated · ${confidence(96, 99)}%`, level: visionLevel },
+        vision: { label: `Corroborated · ${confidence(96, 99)}%`, level: "good" },
         vibration: { label: `Trigger source · ${confidence(98, 99)}%`, level: "alert" },
         thermal: {
           label: state.temperature >= 60 ? `Overheating · ${confidence(95, 98)}%` : `Stable thermal · ${confidence(95, 97)}%`,
-          level: thermalLevel
+          level: state.temperature >= 60 ? "alert" : "good"
         },
         acoustic: {
           label: state.audioAbnormal ? `Abnormal hiss · ${confidence(95, 98)}%` : `Stable band · ${confidence(95, 97)}%`,
-          level: acousticLevel
+          level: state.audioAbnormal ? "alert" : "good"
         },
-        depth: { label: `Reference lock · ${confidence(96, 98)}%`, level: depthLevel },
+        depth: { label: `Reference lock · ${confidence(96, 98)}%`, level: "good" },
         verdict: `Fusion decision: ${activeTarget().label} breach confirmed at ${Math.abs(state.eventDeltaPct).toFixed(2)}% deviation.`
       };
     }
