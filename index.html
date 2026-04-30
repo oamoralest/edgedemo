@@ -1188,6 +1188,10 @@
       color: var(--red);
     }
 
+    .alert-text .ok {
+      color: var(--green);
+    }
+
     .sim-controls {
       display: grid;
       grid-template-columns: 1fr;
@@ -1957,10 +1961,14 @@
 
     function updateAlertCopy() {
       const target = activeTarget();
-      const thermalState = state.temperature >= 60 ? `${state.temperature.toFixed(1)}°C overheating` : `${state.temperature.toFixed(1)}°C stable thermal`;
-      const acousticState = state.audioAbnormal ? "abnormal acoustic hissing" : "acoustic band stable";
+      const thermalState = state.temperature >= 60
+        ? `<strong>${state.temperature.toFixed(1)}°C overheating</strong>`
+        : `<span class="ok">${state.temperature.toFixed(1)}°C stable thermal</span>`;
+      const acousticState = state.audioAbnormal
+        ? "<strong>abnormal acoustic hissing</strong>"
+        : "<span class=\"ok\">acoustic band stable</span>";
       els.alertTitle.textContent = target.alertTitle;
-      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> pressure shift, <strong>${thermalState}</strong>, and <strong>${acousticState}</strong>. Evidence was captured locally and sent for operator review.`;
+      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> pressure shift, ${thermalState}, and ${acousticState}. Evidence was captured locally and sent for operator review.`;
     }
 
     function updateAssetDetails() {
