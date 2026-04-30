@@ -208,12 +208,11 @@
       border: 1px solid var(--line);
       border-radius: 24px;
       background:
-        radial-gradient(circle at 50% 30%, rgba(86, 209, 255, 0.13), transparent 22rem),
-        rgba(0, 0, 0, 0.18);
-      display: grid;
-      place-items: center;
+        radial-gradient(circle at 50% 20%, rgba(86, 209, 255, 0.1), transparent 20rem),
+        rgba(0, 0, 0, 0.2);
       position: relative;
       overflow: hidden;
+      padding: 10px;
     }
 
     .readout::before {
@@ -236,11 +235,77 @@
       animation: scan 4s linear infinite;
     }
 
-    .value-wrap {
-      text-align: center;
+    .modal-grid {
       position: relative;
       z-index: 1;
-      transform: none;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      height: 100%;
+    }
+
+    .sensor-tile {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .sensor-tile h3 {
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .sensor-reading {
+      margin-top: 6px;
+      font-size: 1.72rem;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-shadow: 0 0 22px rgba(86, 209, 255, 0.24);
+    }
+
+    .sensor-reading.alerting {
+      color: var(--red);
+      text-shadow: 0 0 26px rgba(255, 77, 109, 0.55);
+    }
+
+    .sensor-subtext {
+      margin-top: 5px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sensor-threshold {
+      margin-top: auto;
+      padding-top: 6px;
+      font-size: 0.66rem;
+      color: #c8dceb;
+      opacity: 0.85;
+    }
+
+    .waveform {
+      margin-top: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.84rem;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
+      min-height: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+    }
+
+    .waveform.alerting {
+      color: var(--red);
+      text-shadow: 0 0 12px rgba(255, 77, 109, 0.44);
     }
 
     .value {
@@ -319,6 +384,55 @@
       padding: 0 16px 12px;
       position: relative;
       z-index: 1;
+    }
+
+    .fusion-strip {
+      margin: 10px 16px 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(12, 32, 46, 0.6);
+    }
+
+    .fusion-grid {
+      margin-top: 7px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .fusion-chip {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 7px 8px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .fusion-chip span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .fusion-chip b {
+      display: block;
+      font-size: 0.78rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fusion-chip.good b { color: var(--green); }
+    .fusion-chip.warn b { color: var(--amber); }
+    .fusion-chip.alert b { color: var(--red); }
+
+    .fusion-verdict {
+      margin-top: 9px;
+      border-top: 1px solid rgba(86, 209, 255, 0.18);
+      padding-top: 8px;
+      color: #d7ebf7;
+      font-size: 0.78rem;
     }
 
     .monitor-card {
@@ -950,6 +1064,69 @@
       min-width: 0;
     }
 
+    .delivery-panel {
+      grid-column: 1 / -1;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(5, 14, 24, 0.35);
+      padding: 10px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .route-chips {
+      display: flex;
+      gap: 6px;
+    }
+
+    .route-chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .route-chip.active {
+      color: var(--text);
+      border-color: rgba(86, 209, 255, 0.72);
+      background: rgba(86, 209, 255, 0.16);
+    }
+
+    .delivery-list {
+      display: grid;
+      gap: 3px;
+      color: #d5eaf8;
+      font-size: 0.74rem;
+    }
+
+    .event-rail {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .event-step {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 7px;
+      font-size: 0.66rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .event-step.active {
+      color: var(--text);
+      border-color: rgba(86, 209, 255, 0.74);
+      background: rgba(86, 209, 255, 0.16);
+    }
+
     .asset-panel {
       padding: 12px 14px;
       position: relative;
@@ -1112,13 +1289,21 @@
         height: 190px;
       }
 
-      .value {
-        font-size: clamp(3rem, 12vw, 4.6rem);
+      .modal-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sensor-reading {
+        font-size: 1.4rem;
       }
 
       .side-metrics {
         grid-template-columns: repeat(2, 1fr);
         gap: 6px;
+      }
+
+      .fusion-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .metric {
@@ -1317,11 +1502,11 @@
       }
 
       .readout {
-        height: 176px;
+        height: 190px;
       }
 
-      .value {
-        font-size: clamp(3.2rem, 7vw, 5.6rem);
+      .sensor-reading {
+        font-size: 1.52rem;
       }
 
       .image-frame,
@@ -1346,6 +1531,10 @@
 
       .asset-grid {
         grid-template-columns: 1fr;
+      }
+
+      .event-rail {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .alert-text {
@@ -1425,17 +1614,32 @@
         <div class="card-header">
           <div>
             <p class="eyebrow">Live Sensor X</p>
-            <h2>Vibration-Normalized Gauge Proxy</h2>
+            <h2>Multi-Modal Sensor Fusion</h2>
           </div>
           <span class="tag" id="clock">--:--:--</span>
         </div>
 
         <div class="hero">
           <div class="readout">
-            <div class="value-wrap">
-              <div id="value" class="value">100.00</div>
-              <p class="unit">X value · baseline 100.00</p>
-              <div id="delta" class="delta">Δ +0.00% within ±0.5%</div>
+            <div class="modal-grid">
+              <div class="sensor-tile">
+                <h3>ToF · Pressure</h3>
+                <div id="pressureValue" class="sensor-reading">100.00</div>
+                <p id="pressureDelta" class="sensor-subtext">Δ +0.00% within ±0.5%</p>
+                <p class="sensor-threshold">Threshold: ±5% deviation · Unit: Pa</p>
+              </div>
+              <div class="sensor-tile">
+                <h3>Infrared · Temperature</h3>
+                <div id="tempValue" class="sensor-reading">50.0°C</div>
+                <p id="tempState" class="sensor-subtext">Nominal thermal band</p>
+                <p class="sensor-threshold">Threshold: 60°C</p>
+              </div>
+              <div class="sensor-tile">
+                <h3>Microphone · Acoustic</h3>
+                <div id="audioState" class="sensor-subtext">Normal machine tone</div>
+                <div id="audioWave" class="waveform">~~^~~~^^~~^~~~^^~~</div>
+                <p class="sensor-threshold">Threshold: abnormal hissing/bubbling</p>
+              </div>
             </div>
           </div>
 
@@ -1459,17 +1663,43 @@
           </div>
         </div>
 
+        <div class="fusion-strip">
+          <p class="eyebrow">Sensor Fusion Status</p>
+          <div class="fusion-grid">
+            <div id="modVision" class="fusion-chip good"><span>Vision</span><b>Nominal · 97%</b></div>
+            <div id="modVibration" class="fusion-chip good"><span>Vibration</span><b>Nominal · 98%</b></div>
+            <div id="modThermal" class="fusion-chip good"><span>Thermal</span><b>Nominal · 96%</b></div>
+            <div id="modAcoustic" class="fusion-chip good"><span>Acoustic</span><b>Nominal · 96%</b></div>
+            <div id="modDepth" class="fusion-chip good"><span>Depth</span><b>Nominal · 97%</b></div>
+          </div>
+          <p id="fusionVerdict" class="fusion-verdict">Fusion decision: monitoring nominal baseline across all modalities.</p>
+        </div>
+
         <div class="operator-panel">
           <div class="operator-copy">
             <p class="eyebrow">Operator Alert</p>
             <h2 id="alertTitle">No active alert</h2>
             <p id="alertText" class="alert-text">
-              The edge device is reading normal ±0.5% vibration variance around baseline. No action required.
+              The edge device is reading nominal pressure, temperature, and acoustic signatures. No action required.
             </p>
           </div>
 
           <div class="operator-actions">
             <button class="primary" id="addressBtn" disabled>Addressed / Verify</button>
+          </div>
+
+          <div class="delivery-panel">
+            <p class="eyebrow">Alert Delivery</p>
+            <p id="alertPayload" class="alert-text">No active payload. Alert package is idle.</p>
+            <div class="route-chips">
+              <span id="routeSms" class="route-chip">SMS</span>
+              <span id="routeMes" class="route-chip">MES</span>
+            </div>
+            <div class="delivery-list">
+              <p id="smsStatus">SMS route idle.</p>
+              <p id="mesStatus">MES route idle.</p>
+              <p id="ackStatus">Awaiting threshold breach.</p>
+            </div>
           </div>
 
           <div class="edge-status">
@@ -1479,6 +1709,13 @@
         </div>
 
         <div class="timeline">
+          <div class="event-rail">
+            <div id="evDetected" class="event-step">Detected</div>
+            <div id="evValidated" class="event-step">Validated</div>
+            <div id="evSent" class="event-step">Sent</div>
+            <div id="evAcked" class="event-step">Acknowledged</div>
+            <div id="evVerified" class="event-step">Verified</div>
+          </div>
           <div class="rail">
             <div id="stepObserve" class="step active">
               <small>01 observe</small>
@@ -1547,7 +1784,7 @@
             <p class="eyebrow">Demo Controls</p>
             <h2>Simulation</h2>
             <div class="sim-controls">
-              <button class="danger" id="simulateBtn">Simulate -5% Event</button>
+              <button class="danger" id="simulateBtn">Simulate Event</button>
               <button id="resetBtn">Reset Demo</button>
               <button id="pauseBtn">Pause Stream</button>
             </div>
@@ -1562,9 +1799,12 @@
     const jitter = 0.5;
     const state = {
       current: baseline,
+      temperature: 50,
+      audioAbnormal: false,
       alert: false,
       acknowledged: false,
       eventDeltaPct: 0,
+      eventTicket: null,
       target: "gauge",
       lastCaptureAt: null,
       paused: false,
@@ -1631,8 +1871,12 @@
     };
 
     const els = {
-      value: document.querySelector("#value"),
-      delta: document.querySelector("#delta"),
+      pressureValue: document.querySelector("#pressureValue"),
+      pressureDelta: document.querySelector("#pressureDelta"),
+      tempValue: document.querySelector("#tempValue"),
+      tempState: document.querySelector("#tempState"),
+      audioState: document.querySelector("#audioState"),
+      audioWave: document.querySelector("#audioWave"),
       statusDot: document.querySelector("#statusDot"),
       statusText: document.querySelector("#statusText"),
       confidence: document.querySelector("#confidence"),
@@ -1647,7 +1891,28 @@
       assetMethod: document.querySelector("#assetMethod"),
       assetDelta: document.querySelector("#assetDelta"),
       assetLast: document.querySelector("#assetLast"),
+      fusionVerdict: document.querySelector("#fusionVerdict"),
+      modalities: {
+        vision: document.querySelector("#modVision"),
+        vibration: document.querySelector("#modVibration"),
+        thermal: document.querySelector("#modThermal"),
+        acoustic: document.querySelector("#modAcoustic"),
+        depth: document.querySelector("#modDepth")
+      },
+      alertPayload: document.querySelector("#alertPayload"),
+      routeSms: document.querySelector("#routeSms"),
+      routeMes: document.querySelector("#routeMes"),
+      smsStatus: document.querySelector("#smsStatus"),
+      mesStatus: document.querySelector("#mesStatus"),
+      ackStatus: document.querySelector("#ackStatus"),
       targetButtons: document.querySelectorAll(".asset-btn"),
+      eventSteps: [
+        document.querySelector("#evDetected"),
+        document.querySelector("#evValidated"),
+        document.querySelector("#evSent"),
+        document.querySelector("#evAcked"),
+        document.querySelector("#evVerified")
+      ],
       steps: {
         observe: document.querySelector("#stepObserve"),
         detect: document.querySelector("#stepDetect"),
@@ -1692,7 +1957,7 @@
     function updateAlertCopy() {
       const target = activeTarget();
       els.alertTitle.textContent = target.alertTitle;
-      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> change in the ${target.eventNoun}. Evidence was captured locally and sent for operator review.`;
+      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> pressure shift, <strong>${state.temperature.toFixed(1)}°C</strong> overheating, and abnormal acoustic hissing. Evidence was captured locally and sent for operator review.`;
     }
 
     function updateAssetDetails() {
@@ -1703,18 +1968,88 @@
       els.assetLast.textContent = state.lastCaptureAt ? state.lastCaptureAt.toLocaleTimeString() : "Pending";
     }
 
+    function setModality(key, label, level) {
+      const chip = els.modalities[key];
+      chip.classList.remove("good", "warn", "alert");
+      chip.classList.add(level);
+      chip.querySelector("b").textContent = label;
+    }
+
+    function updateFusionSummary() {
+      const target = activeTarget();
+      if (!state.alert) {
+        setModality("vision", "Nominal · 97%", "good");
+        setModality("vibration", "Nominal · 98%", "good");
+        setModality("thermal", "Nominal · 96%", "good");
+        setModality("acoustic", "Nominal · 96%", "good");
+        setModality("depth", "Nominal · 97%", "good");
+        els.fusionVerdict.textContent = "Fusion decision: monitoring nominal baseline across all modalities.";
+        return;
+      }
+
+      setModality("vision", "Corroborated · 98%", target.method.includes("Vision") ? "alert" : "warn");
+      setModality("vibration", "Trigger source · 99%", "alert");
+      setModality("thermal", "Rising trend · 95%", "warn");
+      setModality("acoustic", "Stable band · 96%", "good");
+      setModality("depth", "Reference lock · 97%", target.method.includes("Depth") ? "alert" : "good");
+      els.fusionVerdict.textContent = `Fusion decision: ${target.label} breach confirmed at ${Math.abs(state.eventDeltaPct).toFixed(2)}% deviation.`;
+    }
+
+    function updateDeliveryPanel() {
+      const target = activeTarget();
+      if (!state.alert && !state.acknowledged) {
+        els.alertPayload.textContent = "No active payload. Alert package is idle.";
+        els.routeSms.classList.remove("active");
+        els.routeMes.classList.remove("active");
+        els.smsStatus.textContent = "SMS route idle.";
+        els.mesStatus.textContent = "MES route idle.";
+        els.ackStatus.textContent = "Awaiting threshold breach.";
+        return;
+      }
+
+      if (!state.alert && state.acknowledged) {
+        els.alertPayload.textContent = `Alert resolved · ${target.label} returned to nominal band.`;
+        els.routeSms.classList.add("active");
+        els.routeMes.classList.add("active");
+        els.smsStatus.textContent = "SMS closure notice delivered to operator.";
+        els.mesStatus.textContent = `MES event ${state.eventTicket || "EVT-0000"} marked resolved.`;
+        els.ackStatus.textContent = "Verification complete. Monitoring resumed.";
+        return;
+      }
+
+      els.alertPayload.textContent = `${target.alertTitle} · ${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}% vs baseline 100.00`;
+      els.routeSms.classList.add("active");
+      els.routeMes.classList.add("active");
+      els.smsStatus.textContent = state.acknowledged ? "SMS acknowledged by operator." : "SMS sent to on-call operator (2.1s).";
+      els.mesStatus.textContent = `MES event created: ${state.eventTicket || "EVT-0000"}.`;
+      els.ackStatus.textContent = state.acknowledged ? "Acknowledged; verification reading in progress." : "Awaiting operator acknowledgment.";
+    }
+
+    function setEventStage(lastActiveIndex) {
+      els.eventSteps.forEach((step, index) => {
+        step.classList.toggle("active", index <= lastActiveIndex);
+      });
+    }
+
     function render() {
       const delta = pctDelta(state.current);
       const confidence = Number.parseFloat(els.confidence.textContent);
       const worker = els.workerState.textContent.trim();
-      els.value.textContent = state.current.toFixed(2);
-      els.delta.textContent = `Δ ${delta >= 0 ? "+" : ""}${delta.toFixed(2)}% ${state.alert ? "threshold breach" : "within ±0.5%"}`;
+      els.pressureValue.textContent = state.current.toFixed(2);
+      els.pressureDelta.textContent = `Δ ${delta >= 0 ? "+" : ""}${delta.toFixed(2)}% ${state.alert ? "threshold breach" : "within ±0.5%"}`;
+      els.tempValue.textContent = `${state.temperature.toFixed(1)}°C`;
+      els.tempState.textContent = state.alert ? "Overheating detected" : "Nominal thermal band";
+      els.audioState.textContent = state.audioAbnormal ? "Hissing / bubbling detected" : "Normal machine tone";
+      els.audioWave.textContent = state.audioAbnormal ? "~~!!~!!!~!!~!~~~!!!~" : "~~^~~~^^~~^~~~^^~~";
       els.clock.textContent = new Date().toLocaleTimeString();
-      els.value.classList.toggle("alerting", state.alert);
-      els.delta.classList.toggle("alerting", state.alert);
+      els.pressureValue.classList.toggle("alerting", state.alert);
+      els.tempValue.classList.toggle("alerting", state.alert);
+      els.audioWave.classList.toggle("alerting", state.audioAbnormal);
       els.statusDot.classList.toggle("alert", state.alert && !state.acknowledged);
       els.confidence.classList.toggle("ok", Number.isFinite(confidence) && confidence > 95);
       els.workerState.classList.toggle("ok", worker === "Awake");
+      updateFusionSummary();
+      updateDeliveryPanel();
       document.querySelector("#addressBtn").disabled = !state.alert || state.acknowledged;
     }
 
@@ -1725,6 +2060,8 @@
       }
 
       state.current = baseline + randomBetween(-jitter, jitter);
+      state.temperature = 50 + randomBetween(-0.6, 0.6);
+      state.audioAbnormal = false;
       els.confidence.textContent = `${randomBetween(96.4, 98.9).toFixed(1)}%`;
       render();
     }
@@ -1773,11 +2110,14 @@
       if (state.alert) return;
 
       const direction = Math.random() < 0.5 ? -1 : 1;
-      const magnitude = randomBetween(5, 7.5);
+      const magnitude = 5;
       state.eventDeltaPct = magnitude * direction;
       state.alert = true;
       state.acknowledged = false;
+      state.eventTicket = `EVT-${Math.floor(randomBetween(1000, 9999))}`;
       state.current = baseline * (1 + state.eventDeltaPct / 100);
+      state.temperature = 61;
+      state.audioAbnormal = true;
       els.statusText.textContent = "Alert raised by edge device";
       els.sensorMode.textContent = "Trigger Lock";
       els.workerState.textContent = "Awake";
@@ -1786,6 +2126,7 @@
       setStep("detect", true, true);
       setStep("capture", true, true);
       setStep("report", true, true);
+      setEventStage(2);
       captureImage();
       log(`${activeTarget().label} anomaly: ${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}% capture sent.`);
       updateAssetDetails();
@@ -1804,22 +2145,27 @@
       els.workerState.textContent = "Verifying";
       els.alertTitle.textContent = "Verification reading in progress";
       els.alertText.textContent = "Operator marked the event as addressed. The edge device is taking an immediate follow-up reading to confirm whether Sensor X returned to the expected vibration-normalized band.";
+      setEventStage(3);
       log("Addressed: verification reading started.");
       render();
 
       window.setTimeout(() => {
         state.alert = false;
+        state.acknowledged = true;
         state.current = baseline + randomBetween(-0.18, 0.18);
+        state.temperature = 50 + randomBetween(-0.4, 0.4);
+        state.audioAbnormal = false;
         els.statusText.textContent = "Verified return to nominal band";
         els.sensorMode.textContent = "Depth Sensor Active";
         els.workerState.textContent = "Sleeping";
         els.confidence.textContent = "97.9%";
         els.alertTitle.textContent = "Alert resolved";
-        els.alertText.textContent = "Follow-up reading confirms Sensor X has returned to the expected ±0.5% vibration band. Event is closed and stored for drift analysis.";
+        els.alertText.textContent = "Follow-up reading confirms pressure, thermal, and acoustic signals returned to nominal bands. Event is closed and stored for drift analysis.";
         clearCapture();
         setStep("detect", false);
         setStep("capture", false);
         setStep("report", false);
+        setEventStage(4);
         log("Verified: Sensor X nominal; event closed.");
         updateAssetDetails();
         render();
@@ -1830,20 +2176,24 @@
       state.alert = false;
       state.acknowledged = false;
       state.eventDeltaPct = 0;
+      state.eventTicket = null;
       state.lastCaptureAt = null;
       state.paused = false;
       state.current = baseline;
+      state.temperature = 50;
+      state.audioAbnormal = false;
       state.startedAt = Date.now();
       els.statusText.textContent = "Nominal edge observation";
       els.sensorMode.textContent = "Depth Sensor Active";
       els.workerState.textContent = "Sleeping";
       els.alertTitle.textContent = "No active alert";
-      els.alertText.textContent = "The edge device is reading normal ±0.5% vibration variance around baseline. No action required.";
+      els.alertText.textContent = "The edge device is reading nominal pressure, temperature, and acoustic signatures. No action required.";
       clearCapture();
       document.querySelector("#pauseBtn").textContent = "Pause Stream";
       setStep("detect", false);
       setStep("capture", false);
       setStep("report", false);
+      setEventStage(-1);
       log("Reset: ready for manual simulation.");
       updateAssetDetails();
       render();
@@ -1878,6 +2228,7 @@
     log("Edge online: nominal stream active.");
     updateTargetButtons();
     updateAssetDetails();
+    setEventStage(-1);
     render();
   </script>
 </body>
