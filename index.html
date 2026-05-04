@@ -411,10 +411,12 @@
     .fusion-chip span {
       display: block;
       color: var(--muted);
-      font-size: 0.58rem;
-      letter-spacing: 0.08em;
+      font-size: 0.52rem;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       margin-bottom: 3px;
+      line-height: 1.2;
+      hyphens: auto;
     }
 
     .fusion-chip b {
@@ -844,6 +846,16 @@
       border-radius: 14px;
       box-shadow: 0 0 18px rgba(255, 77, 109, 0.42);
       z-index: 3;
+      box-sizing: border-box;
+    }
+
+    /* Fully inside overflow:hidden frame; reserve bottom for capture stamp */
+    .evidence-sim.gauge .anomaly-box {
+      left: clamp(12px, 3vw, 18px);
+      top: clamp(10px, 2.5%, 14px);
+      width: min(104px, calc(100% - 24px));
+      height: min(104px, calc(100% - 34px));
+      box-sizing: border-box;
     }
 
     .evidence-sim.digital .anomaly-box {
@@ -1192,6 +1204,84 @@
       color: var(--green);
     }
 
+    .alert-explain {
+      margin-top: 10px;
+      border: 1px solid rgba(86, 209, 255, 0.22);
+      border-radius: 12px;
+      background: rgba(5, 14, 22, 0.45);
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: #d5eaf8;
+    }
+
+    .alert-explain.alert-explain--muted {
+      opacity: 0.82;
+    }
+
+    .alert-explain summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 8px 10px;
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      user-select: none;
+    }
+
+    .alert-explain summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .alert-explain summary::after {
+      content: "+";
+      float: right;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .alert-explain[open] summary::after {
+      content: "−";
+    }
+
+    .alert-explain__hint {
+      display: none;
+      letter-spacing: normal;
+      text-transform: none;
+      color: var(--muted);
+      font-size: 0.58rem;
+      margin-left: 6px;
+    }
+
+    @media (min-width: 520px) {
+      .alert-explain__hint {
+        display: inline;
+      }
+    }
+
+    .alert-explain__body {
+      padding: 0 10px 10px;
+      border-top: 1px solid rgba(86, 209, 255, 0.12);
+      display: grid;
+      gap: 8px;
+    }
+
+    .alert-explain__row span {
+      display: block;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .alert-explain__row p {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.74rem;
+      line-height: 1.38;
+    }
+
     .sim-controls {
       display: grid;
       grid-template-columns: 1fr;
@@ -1354,6 +1444,13 @@
       .anomaly-box {
         width: 90px;
         height: 90px;
+      }
+
+      .evidence-sim.gauge .anomaly-box {
+        left: 12px;
+        top: 8px;
+        width: min(92px, calc(100% - 24px));
+        height: min(92px, calc(100% - 30px));
       }
 
       .evidence-label {
@@ -1627,19 +1724,19 @@
           <div class="readout">
             <div class="modal-grid">
               <div class="sensor-tile">
-                <h3>ToF · Pressure</h3>
+                <h3>ToF Pressure</h3>
                 <div id="pressureValue" class="sensor-reading">100.00</div>
                 <p id="pressureDelta" class="sensor-subtext">Δ +0.00% within ±0.5%</p>
                 <p class="sensor-threshold">Threshold: ±5% deviation · Unit: Pa</p>
               </div>
               <div class="sensor-tile">
-                <h3>Infrared · Temperature</h3>
+                <h3>Infrared Temperature</h3>
                 <div id="tempValue" class="sensor-reading">50.0°C</div>
                 <p id="tempState" class="sensor-subtext">Nominal thermal band</p>
                 <p class="sensor-threshold">Threshold: 60°C</p>
               </div>
               <div class="sensor-tile">
-                <h3>Microphone · Acoustic</h3>
+                <h3>Microphone Acoustic</h3>
                 <div id="audioState" class="sensor-subtext">Normal machine tone</div>
                 <div id="audioWave" class="waveform">~~^~~~^^~~^~~~^^~~</div>
                 <p class="sensor-threshold">Threshold: abnormal hissing/bubbling</p>
@@ -1672,9 +1769,9 @@
           <div class="fusion-grid">
             <div id="modVision" class="fusion-chip good"><span>Vision</span><b>Nominal · 97%</b></div>
             <div id="modVibration" class="fusion-chip good"><span>Vibration</span><b>Nominal · 98%</b></div>
-            <div id="modThermal" class="fusion-chip good"><span>Thermal</span><b>Nominal · 96%</b></div>
-            <div id="modAcoustic" class="fusion-chip good"><span>Acoustic</span><b>Nominal · 96%</b></div>
-            <div id="modDepth" class="fusion-chip good"><span>Depth</span><b>Nominal · 97%</b></div>
+            <div id="modThermal" class="fusion-chip good"><span>Infrared Temperature</span><b>Nominal · 96%</b></div>
+            <div id="modAcoustic" class="fusion-chip good"><span>Microphone Acoustic</span><b>Nominal · 96%</b></div>
+            <div id="modDepth" class="fusion-chip good"><span>ToF Pressure</span><b>Nominal · 97%</b></div>
           </div>
           <p id="fusionVerdict" class="fusion-verdict">Fusion decision: monitoring nominal baseline across all modalities.</p>
         </div>
@@ -1684,8 +1781,29 @@
             <p class="eyebrow">Operator Alert</p>
             <h2 id="alertTitle">No active alert</h2>
             <p id="alertText" class="alert-text">
-              The edge device is reading nominal pressure, temperature, and acoustic signatures. No action required.
+              The edge device is reading nominal ToF Pressure, Infrared Temperature, and Microphone Acoustic. No action required.
             </p>
+            <details class="alert-explain alert-explain--muted" id="alertExplain">
+              <summary>Why this alert?<span class="alert-explain__hint"> Human-in-the-loop context</span></summary>
+              <div class="alert-explain__body">
+                <div class="alert-explain__row">
+                  <span>Trigger sensor(s)</span>
+                  <p id="explainTrigger">—</p>
+                </div>
+                <div class="alert-explain__row">
+                  <span>Corroborating sensors</span>
+                  <p id="explainCorroborate">—</p>
+                </div>
+                <div class="alert-explain__row">
+                  <span>Confidence threshold</span>
+                  <p id="explainThreshold">—</p>
+                </div>
+                <div class="alert-explain__row">
+                  <span>Did not contribute</span>
+                  <p id="explainExcluded">—</p>
+                </div>
+              </div>
+            </details>
           </div>
 
           <div class="operator-actions">
@@ -1799,6 +1917,14 @@
   </div>
 
   <script>
+    const SENSOR_LABEL = {
+      tofPressure: "ToF Pressure",
+      infraredTemp: "Infrared Temperature",
+      micAcoustic: "Microphone Acoustic",
+      vision: "Vision",
+      vibration: "Vibration"
+    };
+
     const baseline = 100;
     const jitter = 0.5;
     const state = {
@@ -1890,6 +2016,11 @@
       imageFrame: document.querySelector("#imageFrame"),
       alertTitle: document.querySelector("#alertTitle"),
       alertText: document.querySelector("#alertText"),
+      alertExplain: document.querySelector("#alertExplain"),
+      explainTrigger: document.querySelector("#explainTrigger"),
+      explainCorroborate: document.querySelector("#explainCorroborate"),
+      explainThreshold: document.querySelector("#explainThreshold"),
+      explainExcluded: document.querySelector("#explainExcluded"),
       clock: document.querySelector("#clock"),
       log: document.querySelector("#log"),
       assetType: document.querySelector("#assetType"),
@@ -1968,7 +2099,7 @@
         ? "<strong>abnormal acoustic hissing</strong>"
         : "<span class=\"ok\">acoustic band stable</span>";
       els.alertTitle.textContent = target.alertTitle;
-      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> pressure shift, ${thermalState}, and ${acousticState}. Evidence was captured locally and sent for operator review.`;
+      els.alertText.innerHTML = `The Sentry detected a <strong>${state.eventDeltaPct >= 0 ? "+" : ""}${state.eventDeltaPct.toFixed(2)}%</strong> deviation on ${SENSOR_LABEL.tofPressure}, ${thermalState}, and ${acousticState}. Evidence was captured locally and sent for operator review.`;
     }
 
     function updateAssetDetails() {
@@ -2029,6 +2160,52 @@
       els.fusionVerdict.textContent = status.verdict;
     }
 
+    function updateAlertExplanation() {
+      const { alertExplain, explainTrigger, explainCorroborate, explainThreshold, explainExcluded, confidence: confEl } = els;
+
+      if (!state.alert && !state.acknowledged) {
+        explainTrigger.textContent = "—";
+        explainCorroborate.textContent = "—";
+        explainThreshold.textContent =
+          "Operator notifications are gated at ≥95% confidence on each stream that is marked contributing for this package (human-in-the-loop policy).";
+        explainExcluded.textContent = "—";
+        alertExplain.classList.add("alert-explain--muted");
+        return;
+      }
+
+      if (!state.alert && state.acknowledged) {
+        explainTrigger.textContent = "No active breach — event verified closed.";
+        explainCorroborate.textContent = "—";
+        explainThreshold.textContent = `Policy unchanged: ≥95% confidence gate. Last package: ${state.eventTicket || "MES log"}.`;
+        explainExcluded.textContent = "—";
+        alertExplain.classList.remove("alert-explain--muted");
+        return;
+      }
+
+      alertExplain.classList.remove("alert-explain--muted");
+
+      const triggers = [`${SENSOR_LABEL.tofPressure} (≥5% vs baseline)`];
+      if (state.temperature >= 60) {
+        triggers.push(`${SENSOR_LABEL.infraredTemp} (>60 °C)`);
+      }
+      if (state.audioAbnormal) {
+        triggers.push(`${SENSOR_LABEL.micAcoustic} (abnormal signature)`);
+      }
+      explainTrigger.textContent = triggers.join("; ");
+
+      explainCorroborate.textContent = `${SENSOR_LABEL.vision} (scene corroboration), ${SENSOR_LABEL.vibration} (motion / FFT gate)`;
+
+      const liveConf = confEl.textContent.trim();
+      explainThreshold.textContent = `Fused decision exceeded the ≥95% confidence gate (live fused readout ${liveConf}); Worker wake and capture authorized.`;
+
+      if (!state.audioAbnormal) {
+        explainExcluded.textContent = `${SENSOR_LABEL.micAcoustic} — stable; not used as a primary alert driver for this package`;
+      } else {
+        explainExcluded.textContent =
+          "All monitored inputs contributed context for this anomaly (thermal + pressure + abnormal acoustic signature).";
+      }
+    }
+
     function updateDeliveryPanel() {
       const target = activeTarget();
       if (!state.alert && !state.acknowledged) {
@@ -2085,6 +2262,7 @@
       els.workerState.classList.toggle("ok", worker === "Awake");
       updateFusionSummary();
       updateDeliveryPanel();
+      updateAlertExplanation();
       document.querySelector("#addressBtn").disabled = !state.alert || state.acknowledged;
     }
 
@@ -2181,7 +2359,8 @@
       els.statusText.textContent = "Operator addressed alert; confirming";
       els.workerState.textContent = "Verifying";
       els.alertTitle.textContent = "Verification reading in progress";
-      els.alertText.textContent = "Operator marked the event as addressed. The edge device is taking an immediate follow-up reading to confirm whether Sensor X returned to the expected vibration-normalized band.";
+      els.alertText.textContent =
+        "Operator marked the event as addressed. The edge device is taking an immediate follow-up reading to confirm ToF Pressure, Infrared Temperature, and Microphone Acoustic returned to nominal bands.";
       setEventStage(3);
       log("Addressed: verification reading started.");
       render();
@@ -2198,7 +2377,8 @@
         els.workerState.textContent = "Sleeping";
         els.confidence.textContent = "97.9%";
         els.alertTitle.textContent = "Alert resolved";
-        els.alertText.textContent = "Follow-up reading confirms pressure, thermal, and acoustic signals returned to nominal bands. Event is closed and stored for drift analysis.";
+        els.alertText.textContent =
+          "Follow-up reading confirms ToF Pressure, Infrared Temperature, and Microphone Acoustic returned to nominal bands. Event is closed and stored for drift analysis.";
         clearCapture();
         setStep("detect", false);
         setStep("capture", false);
@@ -2226,7 +2406,8 @@
       els.sensorMode.textContent = "Depth Sensor Active";
       els.workerState.textContent = "Sleeping";
       els.alertTitle.textContent = "No active alert";
-      els.alertText.textContent = "The edge device is reading nominal pressure, temperature, and acoustic signatures. No action required.";
+      els.alertText.textContent =
+        "The edge device is reading nominal ToF Pressure, Infrared Temperature, and Microphone Acoustic. No action required.";
       clearCapture();
       document.querySelector("#pauseBtn").textContent = "Pause Stream";
       setStep("detect", false);
@@ -2234,6 +2415,7 @@
       setStep("report", false);
       setEventStage(-1);
       log("Reset: ready for manual simulation.");
+      els.alertExplain.removeAttribute("open");
       updateAssetDetails();
       render();
     }
