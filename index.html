@@ -836,6 +836,12 @@
       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.34);
     }
 
+    .evidence-sim.gauge {
+      --gauge-x: 24px;
+      --gauge-y: 28px;
+      --gauge-size: 94px;
+    }
+
     .anomaly-box {
       position: absolute;
       left: 16px;
@@ -849,12 +855,13 @@
       box-sizing: border-box;
     }
 
-    /* Fully inside overflow:hidden frame; reserve bottom for capture stamp */
+    /* Center ROI on .gauge-face; --gauge-* match .gauge-face position/size */
     .evidence-sim.gauge .anomaly-box {
-      left: clamp(12px, 3vw, 18px);
-      top: clamp(10px, 2.5%, 14px);
-      width: min(104px, calc(100% - 24px));
-      height: min(104px, calc(100% - 34px));
+      --box-side: min(104px, calc(100% - 24px));
+      left: calc(var(--gauge-x) + var(--gauge-size) / 2 - var(--box-side) / 2);
+      top: calc(var(--gauge-y) + var(--gauge-size) / 2 - var(--box-side) / 2);
+      width: var(--box-side);
+      height: var(--box-side);
       box-sizing: border-box;
     }
 
@@ -1430,6 +1437,10 @@
         height: 76px;
       }
 
+      .evidence-sim.gauge {
+        --gauge-size: 76px;
+      }
+
       .gauge-face::before {
         left: 37px;
         top: 35px;
@@ -1447,10 +1458,11 @@
       }
 
       .evidence-sim.gauge .anomaly-box {
-        left: 12px;
-        top: 8px;
-        width: min(92px, calc(100% - 24px));
-        height: min(92px, calc(100% - 30px));
+        --box-side: min(92px, calc(100% - 24px));
+        left: calc(var(--gauge-x) + var(--gauge-size) / 2 - var(--box-side) / 2);
+        top: calc(var(--gauge-y) + var(--gauge-size) / 2 - var(--box-side) / 2);
+        width: var(--box-side);
+        height: var(--box-side);
       }
 
       .evidence-label {
